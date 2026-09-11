@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: ecom-backend
-          image: mendax1/e-comback:latest
+          image: mendax1/e-comback:4b9a79a39275ee2a7390e5f4d5a207e671897abc
 
           ports:
             - containerPort: 8080

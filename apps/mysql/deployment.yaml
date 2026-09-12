@@ -20,17 +20,32 @@ spec:
             - containerPort: 3306
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: root
+              valueFrom:
+                secretKeyRef:
+                  name: ecom-mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
+
             - name: MYSQL_DATABASE
               value: ecom
+
             - name: MYSQL_USER
-              value: ecom
+              valueFrom:
+                secretKeyRef:
+                  name: ecom-mysql-secret
+                  key: MYSQL_USER
+
             - name: MYSQL_PASSWORD
-              value: ecom
+              valueFrom:
+                secretKeyRef:
+                  name: ecom-mysql-secret
+                  key: MYSQL_PASSWORD
+
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
+
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
             claimName: mysql-data
+

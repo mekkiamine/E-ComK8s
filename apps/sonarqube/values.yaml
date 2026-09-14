@@ -1,0 +1,62 @@
+deploymentType: "StatefulSet"
+
+replicaCount: 1
+
+deploymentStrategy:
+  type: Recreate
+
+image:
+  repository: sonarqube
+  tag: "2026.4.1"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  externalPort: 9000
+  internalPort: 9000
+
+resources:
+  requests:
+    cpu: "400m"
+    memory: "1536Mi"
+    ephemeral-storage: "1536Mi"
+  limits:
+    cpu: "800m"
+    memory: "2048Mi"
+    ephemeral-storage: "4Gi"
+
+persistence:
+  enabled: true
+  storageClass: "longhorn"
+  accessMode: ReadWriteOnce
+  size: 5Gi
+  uid: 1000
+  guid: 0
+
+initSysctl:
+  enabled: true
+  vmMaxMapCount: 524288
+  fsFileMax: 131072
+  nofile: 131072
+  nproc: 8192
+
+initFs:
+  enabled: true
+
+jdbcOverwrite:
+  enabled: true
+  jdbcUrl: "jdbc:postgresql://sonarqube-postgresql:5432/sonarqube"
+  jdbcUsername: "sonarqube"
+  jdbcSecretName: "sonarqube-db-secret"
+  jdbcSecretPasswordKey: "POSTGRES_PASSWORD"
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hosts:
+    - name: sonarqube.local
+      path: /
+      pathType: Prefix
+
+monitoringPasscodeSecretName: "sonarqube-monitoring-secret"
+monitoringPasscodeSecretKey: "SONAR_MONITORING_PASSCODE"

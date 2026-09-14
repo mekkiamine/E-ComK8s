@@ -1,3 +1,6 @@
+community:
+  enabled: true
+
 deploymentType: "StatefulSet"
 
 replicaCount: 1

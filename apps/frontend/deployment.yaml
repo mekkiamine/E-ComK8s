@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: mendax1/e-comfront:82d2e8973d4fa83c4141a93661d1cbc01fd98c36
+          image: mendax1/e-comfront:5f83eb34c2e22d847e94f248135bb442a6eeaa45
 
           ports:
             - containerPort: 80

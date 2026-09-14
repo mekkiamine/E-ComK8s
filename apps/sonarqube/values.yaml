@@ -10,7 +10,7 @@ deploymentStrategy:
 
 image:
   repository: sonarqube
-  tag: "2026.4.1"
+  tag: "community"
   pullPolicy: IfNotPresent
 
 service:

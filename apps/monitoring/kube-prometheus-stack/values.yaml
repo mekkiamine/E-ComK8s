@@ -109,6 +109,14 @@ grafana:
 
   # Pre-wire Loki datasource; Prometheus datasource is created automatically
   additionalDataSources:
+    - name: Prometheus
+      type: prometheus
+      access: proxy
+      url: http://kps-kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+      isDefault: true
+      jsonData:
+        timeInterval: 30s
+        httpMethod: POST
     - name: Loki
       type: loki
       access: proxy

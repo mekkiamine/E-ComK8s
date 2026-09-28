@@ -1,0 +1,28 @@
+config:
+  clients:
+    - url: http://loki-gateway.monitoring.svc.cluster.local/loki/api/v1/push
+  snippets:
+    extraRelabelConfigs:
+      # Drop noisy namespaces entirely
+      - source_labels: [__meta_kubernetes_namespace]
+        regex: (kube-system|kube-public|kube-node-lease|longhorn-system|monitoring|sealed-secrets|ingress-nginx|metallb-system|argocd)
+        action: drop
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+
+rbac:
+  create: true
+
+serviceMonitor:
+  enabled: true

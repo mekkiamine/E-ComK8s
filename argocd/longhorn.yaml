@@ -21,6 +21,10 @@ spec:
 
         preUpgradeChecker:
           jobEnabled: false
+       
+        metrics:
+          serviceMonitor:
+            enabled: true
 
   destination:
     server: https://kubernetes.default.svc

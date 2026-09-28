@@ -18,7 +18,6 @@ prometheus:
           resources:
             requests:
               storage: 3Gi
-    # Scrape ALL ServiceMonitors/PodMonitors anywhere in the cluster
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
     probeSelectorNilUsesHelmValues: false
@@ -27,8 +26,16 @@ prometheus:
     podMonitorNamespaceSelector: {}
     ruleNamespaceSelector: {}
 
+  service:
+    type: NodePort
+    nodePort: 30090
+
 # --- Alertmanager --------------------------------------------------------
 alertmanager:
+  service:
+    type: NodePort
+    nodePort: 30093
+
   alertmanagerSpec:
     resources:
       requests:
@@ -45,6 +52,7 @@ alertmanager:
           resources:
             requests:
               storage: 1Gi
+
   config:
     global:
       resolve_timeout: 5m
@@ -60,24 +68,6 @@ alertmanager:
           receiver: "null"
     receivers:
       - name: "null"
-    # ─── To enable Slack notifications later, replace the block above with:
-    #
-    # global:
-    #   slack_api_url: <YOUR_SLACK_WEBHOOK>
-    # route:
-    #   receiver: slack
-    #   group_by: [alertname, namespace]
-    #   routes:
-    #     - matchers: [{alertname =~ "InfoInhibitor|Watchdog"}]
-    #       receiver: "null"
-    # receivers:
-    #   - name: "null"
-    #   - name: slack
-    #     slack_configs:
-    #       - channel: "#alerts"
-    #         send_resolved: true
-    #         title: '{{ .Status | toUpper }} {{ .CommonLabels.alertname }}'
-    #         text: '{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}'
 
 # --- Grafana -------------------------------------------------------------
 grafana:
@@ -85,6 +75,13 @@ grafana:
     existingSecret: grafana-admin-secret
     userKey: admin-user
     passwordKey: admin-password
+
+  service:
+    type: NodePort
+    nodePort: 30030
+
+  ingress:
+    enabled: false
 
   resources:
     requests:
@@ -99,15 +96,6 @@ grafana:
     storageClassName: longhorn
     size: 2Gi
 
-  ingress:
-    enabled: true
-    ingressClassName: nginx
-    hosts:
-      - grafana.ecom.local
-    path: /
-    pathType: Prefix
-
-  # Pre-wire Loki datasource; Prometheus datasource is created automatically
   additionalDataSources:
     - name: Prometheus
       type: prometheus

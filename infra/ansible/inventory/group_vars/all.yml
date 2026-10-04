@@ -1,0 +1,43 @@
+---
+# --- Kubernetes ---
+kubernetes_version: "1.31"
+kubernetes_package_version: "1.31.0-1.1"
+pod_network_cidr: "10.244.0.0/16"
+service_cidr: "10.96.0.0/12"
+control_plane_endpoint: "192.168.0.240:6443"
+
+# --- Container runtime ---
+containerd_version: "1.7.*"
+crictl_version: "v1.31.0"
+
+# --- Networking / kernel ---
+enable_ip_forward: true
+disable_swap: true
+enable_br_netfilter: true
+
+# --- System packages ---
+common_packages:
+  - curl
+  - gnupg
+  - ca-certificates
+  - apt-transport-https
+  - software-properties-common
+  - conntrack
+  - socat
+  - ebtables
+  - ethtool
+  - jq
+  - vim
+  - htop
+  - net-tools
+  - unzip
+  - chrony
+
+# --- Time sync ---
+timezone: "UTC"
+
+# --- APT ---
+apt_cache_valid_time: 3600
+
+# --- SSH / users (used later) ---
+ansible_user: root

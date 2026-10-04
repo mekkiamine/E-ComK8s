@@ -1,0 +1,6 @@
+---
+- name: Common baseline for all Kubernetes nodes
+  hosts: kubernetes
+  become: true
+  roles:
+    - common

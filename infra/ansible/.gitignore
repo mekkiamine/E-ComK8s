@@ -1,4 +1,21 @@
+# Ansible
 *.retry
-*.log
-.vault_pass
-inventory/host_vars/
+__pycache__/
+.cache/
+.ansible/
+
+# Secrets
+*.vault
+*.vault.yml
+vault-password.txt
+
+# Kubernetes credentials
+admin.conf
+*.kubeconfig
+.kube/
+
+# SSH/private keys
+*.pem
+*.key
+id_rsa
+id_ed25519

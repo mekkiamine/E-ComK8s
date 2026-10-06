@@ -1,7 +1,68 @@
 ---
-- name: Common baseline for all Kubernetes nodes
+- name: Prepare Kubernetes infrastructure
   hosts: kubernetes
   become: true
+
   roles:
     - common
     - containerd
+    - kubernetes
+    - cluster
+
+- name: Verify Kubernetes cluster
+  hosts: control_plane
+  become: true
+
+  tasks:
+    - name: Wait for all Kubernetes nodes to become Ready
+      ansible.builtin.command:
+        cmd: >
+          kubectl
+          --kubeconfig=/etc/kubernetes/admin.conf
+          wait
+          --for=condition=Ready
+          nodes
+          --all
+          --timeout=180s
+      changed_when: false
+
+    - name: Display Kubernetes nodes
+      ansible.builtin.command:
+        cmd: >
+          kubectl
+          --kubeconfig=/etc/kubernetes/admin.conf
+          get nodes -o wide
+      register: kubernetes_nodes
+      changed_when: false
+
+    - name: Show Kubernetes nodes
+      ansible.builtin.debug:
+        var: kubernetes_nodes.stdout
+
+    - name: Check system pods
+      ansible.builtin.command:
+        cmd: >
+          kubectl
+          --kubeconfig=/etc/kubernetes/admin.conf
+          get pods
+          -n kube-system
+      register: system_pods
+      changed_when: false
+
+    - name: Show system pods
+      ansible.builtin.debug:
+        var: system_pods.stdout
+
+    - name: Check Flannel pods
+      ansible.builtin.command:
+        cmd: >
+          kubectl
+          --kubeconfig=/etc/kubernetes/admin.conf
+          get pods
+          -n kube-flannel
+      register: flannel_pods
+      changed_when: false
+
+    - name: Show Flannel pods
+      ansible.builtin.debug:
+        var: flannel_pods.stdout

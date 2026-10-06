@@ -1,0 +1,18 @@
+---
+- name: Check whether worker is already joined
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: worker_kubelet_conf
+
+- name: Generate fresh worker join command on control plane
+  ansible.builtin.command:
+    cmd: kubeadm token create --print-join-command
+  delegate_to: "{{ groups['control_plane'][0] }}"
+  register: delegated_join_command
+  changed_when: false
+  when: not worker_kubelet_conf.stat.exists
+
+- name: Join worker to Kubernetes cluster
+  ansible.builtin.command:
+    cmd: "{{ delegated_join_command.stdout }} --cri-socket {{ kubeadm_cri_socket }}"
+  when: not worker_kubelet_conf.stat.exists

@@ -1,0 +1,7 @@
+---
+kubeconfig_path: "/etc/kubernetes/admin.conf"
+user_kubeconfig_path: "/home/{{ ansible_user }}/.kube/config"
+
+kubeadm_cri_socket: "unix:///run/containerd/containerd.sock"
+
+flannel_manifest_url: "https://github.com/flannel-io/flannel/releases/download/{{ flannel_version }}/kube-flannel.yml"
